@@ -5,12 +5,28 @@
     <title>테트리스</title>
 </head>
 <style>
-    canvas {
+    canvas, div {
         border: 2px solid black;
+    }
+    div {
+        width: 260px;
+        height: 40px;
+        button {
+            margin: 5px;
+            border: 1px solid black;
+            cursor: pointer;
+        }
     }
 </style>
 <body>
-    <canvas id="canvas" width="260" height="400"></canvas>
+    <canvas id="canvas" width="260" height="400">
+    </canvas>
+    <div>
+        <button onclick="moveL();">좌</button>
+        <button onclick="moveR();">우</button>
+        <button onclick="rotate();">회전</button>
+        <button onclick="moveB();">하강</button>
+    </div>
 
 
 
