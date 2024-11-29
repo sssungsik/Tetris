@@ -1,3 +1,10 @@
+/*
+ToDo List
+4. 블록별 색상 추가
+6. 게임오버
+7. 프레임 더 부드럽게 하기
+*/
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d'); // 렌더링 컨텍스트
 
