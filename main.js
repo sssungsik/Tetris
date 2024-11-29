@@ -43,13 +43,14 @@ const board = [
     // x : 15 칸  y :  21 칸
 ];
 
-// ---------------점수판 (임시)-----------------
+// ---------------점수판-------------------
 ctx.lineWidth = 0.09;
 ctx.strokeStyle = "black";
 ctx.strokeRect(9,0.5,3.5,1.5);
     // 점수 텍스트
     ctx.font = "0.55px Arial";
-    ctx.fillText("Score : 1000", 9.2, 1.5);
+    let score = 0;
+    ctx.fillText("Score : " + score, 9.2, 1.5);
 
 // ----------------다음 블록 표시판-------------
 ctx.strokeRect(0.5,0.5,5,3);
@@ -186,6 +187,7 @@ function landBlock() {
         });
     });
 
+    clearFill();
 
     // 현재 블록을 다음 블록으로 교체
     player.fragment = nextFragment;
@@ -309,6 +311,36 @@ function checkCollision(fragment, offset) { // offset : 블록의 위치
         }
     }
     return false;
+}
+
+
+// ------------- 블록 채워짐 감지 ------------
+function checkFill(row) {
+    for(let i = 0; i < row.length; i++) {
+        if (row[i] === 0) {
+            return false; // 0이 하나라도 있을경우 false
+        }
+    }
+    return true // 모두 1인 경우 ( 가득 채워진 경우) true
+}
+
+// ----------- 채워진 블록 행 제거 --------------
+function clearFill() {
+    for (let y =0; y < board.length - 1; y ++) { // 바닥은 제외
+        if(checkFill(board[y])) { // 채워짐 감지
+            console.log(`${y} 행 채워짐!! 지웁니다!`);
+
+            // 채워진 행 삭제
+            board.splice(y, 1);
+            // 맨 위에 빈 행 추가
+            board.unshift([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
+            // 점수 + 100
+            ctx.clearRect(9,0.5,3.5,1.5); // 점수판 초기화
+            score += 100; // 점수 + 100
+            ctx.fillStyle = "black"; // 검정색
+            ctx.fillText("Score : " + score, 9.2, 1.5); // 점수판 그리기
+        }
+    }
 }
 
 
