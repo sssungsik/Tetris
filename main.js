@@ -213,20 +213,8 @@ function start() {
     setTimeout(start, 500); // 0.5초마다 호출
 }
 
-// --------------------좌측이동----------------
+// --------------------좌측이동-------------------
 function moveL(){
-    /*
-    if(player.xy.x >= 1) {
-        if (player.xy.y >= 17) {
-            console.log('착지하여 이동 불가');
-        } else {
-            player.xy.x--;
-        }
-    } else {
-        console.log('왼쪽 벽에 막힘');
-    }
-
-     */
     const newOffset = { x: player.xy.x - 1, y: player.xy.y };
     if (!checkCollision(player.fragment, newOffset)) {
         player.xy.x--;
@@ -234,21 +222,15 @@ function moveL(){
         console.log("좌측 충돌!");
     }
 }
+// 왼쪽 방향키 입력 이벤트에 할당
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') {
+        moveL();
+    }
+});
 
 // --------------------우측이동----------------
 function moveR(){
-    /*
-    if(player.xy.x <= 9) {
-        if (player.xy.y >= 17) {
-            console.log('착지하여 이동 불가');
-        } else {
-            player.xy.x++;
-        }
-
-    } else {
-        console.log('오른쪽 벽에 막힘');
-    }
-     */
     const newOffset = { x: player.xy.x + 1, y: player.xy.y };
     if (!checkCollision(player.fragment, newOffset)) {
         player.xy.x++;
@@ -256,6 +238,12 @@ function moveR(){
         console.log("우측 충돌!");
     }
 }
+// 오른쪽 방향키 입력 이벤트에 할당
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') {
+        moveR();
+    }
+});
 
 // --------------------하강----------------
 function moveB(){
@@ -268,6 +256,12 @@ function moveB(){
         landBlock();
     }
 }
+// 아래 방향키 입력 이벤트에 할당
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown') {
+        moveB();
+    }
+});
 
 
 
@@ -294,6 +288,12 @@ function rotate() {
         console.log('착지하여 회전 불가');
     }
 }
+// 위 방향키 입력 이벤트에 할당
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowUp') {
+        rotate();
+    }
+});
 
 // --------------- 충돌 감지 ------------
 function checkCollision(fragment, offset) { // offset : 블록의 위치
