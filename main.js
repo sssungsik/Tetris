@@ -1,7 +1,9 @@
 /*
 ToDo List
-4. 블록별 색상 추가
-6. 게임오버
+
+
+4. 블록별 색상 추가.. 회전했을때 색 고정하는 법
+
 7. 프레임 더 부드럽게 하기
 */
 
@@ -20,16 +22,14 @@ const canvasHeight = canvas.height / 20;
 // 게임 화면 테두리(border) 를  1 의 배열로 감싼다.
 // 게임 판을 0 의 배열로 채운다.
 
-// 충돌감지 : 테두리 1 에 닿았을떄 충돌 처리.
-// 블록삭제 : 배열이 행이 전부 1 일 경우 삭제 하여 처리.
 
 
 // 게임판
 const board = [
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 천장
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 천장                 ------
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],                        // 게임오버 존 (y <= 4) 및 점수판, 다음블록표시판 위치
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // --- 블록 생성 위치 (y:4)  -------
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -48,6 +48,10 @@ const board = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  // 바닥
     // x : 15 칸  y :  21 칸
+
+    // 충돌감지 : 테두리 1 에 닿았을떄 충돌 처리.
+    // 블록삭제 : 배열이 행이 전부 1 일 경우 삭제 하여 처리.
+    // 게임오버 : 블록이 착지하였을떄 y:4 이하 일경우 게임오버
 ];
 
 // ---------------점수판-------------------
@@ -102,9 +106,10 @@ const player = {
 function createFragment(fragment, offset) {
     fragment.forEach((row, y) => {
         row.forEach((value, x) => {
-            if (value !== 0) { // 배열 내 1 인 값을 색깔로 칠함
+            if (value !== 0) { // 배열 내 1 인 값만 색깔로 칠해서 모양을 만들자
                 let fragmentColor;
 
+                // 조각 별 색상
                 if(fragment == fragment1) {
                     fragmentColor = "purple"
                 } else if (fragment == fragment2) {
@@ -116,7 +121,7 @@ function createFragment(fragment, offset) {
                 } else if (fragment == fragment5) {
                     fragmentColor = "red"
                 }
-                ctx.fillStyle = fragmentColor;
+                ctx.fillStyle = fragmentColor; // 회전시 값을 잃는다..
                 ctx.strokeStyle = "black";
                 ctx.lineWidth = 0.05;
                 ctx.fillRect(x + offset.x -1, y + offset.y, 1, 1);
@@ -184,7 +189,7 @@ function create() {
     createFragment(player.fragment, player.xy);
 }
 
-// --------------------블록 착지 후 처리----------------
+// --------------------블록 착지 및 게임오버----------------
 function landBlock() {
     player.fragment.forEach((row, y) => {
         row.forEach((value, x) => {
@@ -193,6 +198,13 @@ function landBlock() {
             }
         });
     });
+
+    // 착지 후 y = 4 이하면 게임오버
+    if (player.xy.y <= 4) {
+        alert('끝!');
+        document.location.reload(); // 게임 재시작
+    }
+
 
     clearFill();
 
@@ -335,7 +347,7 @@ function checkFill(row) {
 function clearFill() {
     for (let y =0; y < board.length - 1; y ++) { // 바닥은 제외
         if(checkFill(board[y])) { // 채워짐 감지
-            console.log(`${y} 행 채워짐!! 지웁니다!`);
+            console.log('+ 100');
 
             // 채워진 행 삭제
             board.splice(y, 1);
@@ -345,7 +357,10 @@ function clearFill() {
             ctx.clearRect(9,0.5,3.5,1.5); // 점수판 초기화
             score += 100; // 점수 + 100
             ctx.fillStyle = "black"; // 검정색
+            ctx.font = "0.55px Arial";
             ctx.fillText("Score : " + score, 9.2, 1.5); // 점수판 그리기
+            ctx.font = "2px Arial";
+
         }
     }
 }
