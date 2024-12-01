@@ -2,7 +2,7 @@
 ToDo List
 
 
-4. 블록별 색상 추가.. 회전했을때 색 고정하는 법
+4. 블록별 색상 추가.. 회전했을때 색 고정하는 법  -
 
 7. 프레임 더 부드럽게 하기
 */
@@ -106,7 +106,7 @@ const player = {
 function createFragment(fragment, offset) {
     fragment.forEach((row, y) => {
         row.forEach((value, x) => {
-            if (value !== 0) { // 배열 내 1 인 값만 색깔로 칠해서 모양을 만들자
+            if (value !== 0) { // 0 이면 빈 공간 , 1 이면 블럭이 있는 부분
                 let fragmentColor;
 
                 // 조각 별 색상
@@ -136,9 +136,8 @@ function createFragment(fragment, offset) {
 // -------------- 다음 블록 표시 함수 ----------------------
 let nextFragment = fragments1[Math.floor(Math.random() * fragments1.length)]; // 다음 블록
 function drawNextBlock() {
-    // 다음 블록 표시 영역 클리어
+    // 다음 블록 표시판 clearRect
     ctx.clearRect(0.5, 0.5, 5, 3);
-
 
     nextFragment.forEach((row, y) => {
         row.forEach((value, x) => {
@@ -163,23 +162,17 @@ function drawNextBlock() {
 }
 
 
-
-
-
-// ----------------화면 clearRect 및 조각 생성 -------------
+// ----------------화면 clearRect 및 게임판 생성 함수 -------------
 const landedFragments = [];  // 착지블록 저장배열
-
 
 function create() {
     ctx.clearRect(0,3.8,canvas.width, canvas.height);
 
-    // `board`를 그리기
     board.forEach((row, y) => {
         row.forEach((value, x) => {
             if (value === 1) {
 
-               ctx.fillStyle = "gray";
-
+                ctx.fillStyle = "gray";
                 ctx.fillRect(x -1, y, 1, 1);
                 ctx.strokeRect(x -1, y, 1, 1);
             }
@@ -194,7 +187,7 @@ function landBlock() {
     player.fragment.forEach((row, y) => {
         row.forEach((value, x) => {
             if (value !== 0) {
-                board[y + player.xy.y][x + player.xy.x] = 1; // 블록 착지
+                board[y + player.xy.y][x + player.xy.x] = 1; // 블록 착지 (착지한 곳의 게임판을 0에서 1로 바꿈)
             }
         });
     });
@@ -211,7 +204,7 @@ function landBlock() {
     // 현재 블록을 다음 블록으로 교체
     player.fragment = nextFragment;
 
-    // 새로운 다음 블록 생성
+    // 새로운 다음 랜덤 블록 생성
     nextFragment = fragments1[Math.floor(Math.random() * fragments1.length)];
 
     // 다음 블록 표시 갱신
@@ -231,7 +224,7 @@ function start() {
     }
 
     create();
-    setTimeout(start, 500); // 0.5초마다 호출
+    setTimeout(start, 500); // 0.5초마다
 }
 
 // --------------------좌측이동-------------------
@@ -337,10 +330,10 @@ function checkCollision(fragment, offset) { // offset : 블록의 위치
 function checkFill(row) {
     for(let i = 0; i < row.length; i++) {
         if (row[i] === 0) {
-            return false; // 0이 하나라도 있을경우 false
+            return false; // 게임판 행에 0이 하나라도 있을경우 false
         }
     }
-    return true // 모두 1인 경우 ( 가득 채워진 경우) true
+    return true // 게임판 행 모두 1인 경우 ( 가득 채워진 경우) true
 }
 
 // ----------- 채워진 블록 행 제거 --------------
@@ -356,7 +349,7 @@ function clearFill() {
             // 점수 + 100
             ctx.clearRect(9,0.5,3.5,1.5); // 점수판 초기화
             score += 100; // 점수 + 100
-            ctx.fillStyle = "black"; // 검정색
+            ctx.fillStyle = "black";
             ctx.font = "0.55px Arial";
             ctx.fillText("Score : " + score, 9.2, 1.5); // 점수판 그리기
             ctx.font = "2px Arial";
